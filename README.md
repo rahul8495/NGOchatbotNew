@@ -61,4 +61,89 @@ Below are the sample bot projects that were developed using Rasa and made to wor
 Check out the widget in action here [demo](https://www.youtube.com/watch?v=mnolLtOWykk)
 
 
+Changes in code
+========================
+
+(1)  we have create a new function "ksend()" in "chat.js"(Uimain/static/js/components/chat.js) file. where we have put the url of kiryanwanda language.(line no 288-320)
+
+         function ksend(message) {
+             $.ajax({
+                 url: "http://irinde.rwandawomennetwork.org/webhooks/rest/webhook",
+                 type: "POST",
+                 contentType: "application/json",
+                 data: JSON.stringify({ message, sender: sender_id }),
+                 success(botResponse, status) {
+                     console.log("Response from Rasa: ", botResponse, "\nStatus: ", status);
+
+                     // if user wants to restart the chat and clear the existing chat contents
+                     if (message.toLowerCase() === "/restart") {
+                         $("#userInput").prop("disabled", false);
+
+                         // if you want the bot to start the conversation after restart
+                         // customActionTrigger();
+                         return;
+                     }
+                     setBotResponse(botResponse);
+                 },
+                 error(xhr, textStatus) {
+                     if (message.toLowerCase() === "/restart") {
+                         $("#userInput").prop("disabled", false);
+                         // if you want the bot to start the conversation after the restart action.
+                         // actionTrigger();
+                         // return;
+                     }
+
+                     // if there is no response from rasa server, set error bot response
+                     setBotResponse("");
+                     console.log("Error from bot end: ", textStatus);
+                 },
+             });
+         }
+
+(2)  write some logic in "chat.js" for which fuction will call if we select language english or kiryanwanda(line no 488-499)
+
+        if (selectlang === "english") {
+                console.log("english trigger in sendbutton")
+                setUserResponse(text);
+                send(text);
+                e.preventDefault();
+            }
+            // if you want to chat in kinyarwanda
+            else if (selectlang === "kinyarwanda") {
+                console.log("kinyarwanda trigger in sendbutton")
+                setUserResponse(text);
+                ksend(text);
+                e.preventDefault();
+            }
+
+(3)  also write some code in the last of "chat.js", code which is given below(line no 504-513)
+
+          $("#english").on("click", (e) => {
+              selectlang = "english";
+              $('.langselect').hide();
+              $(".keypad").show();
+          });
+          $("#Kiryawanda").on("click", (e) => {
+              selectlang = "kinyarwanda";
+              $('.langselect').hide();
+              $(".keypad").show();
+          });
+
+
+
+
+(4)  also put one condition in "suggestionButton.js" (line no 31-39)
+
+         if(selectlang === "english"){
+                 setUserResponse(text);
+                 send(payload);   
+             }
+             // if suggestions button you want in kinyarwanda
+             else if(selectlang === "kinyarwanda"){
+                 setUserResponse(text);
+                 ksend(payload);
+             }
+
+
+
 
