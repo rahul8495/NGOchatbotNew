@@ -44,6 +44,7 @@ function getBotResponse(text) {
  * for more info: `https://rasa.com/docs/rasa/connectors/your-own-website#request-and-response-format`
  */
 function setBotResponse(response) {
+    console.log("inside setBotResponse function")
     // renders bot response after 500 milliseconds
     setTimeout(() => {
         hideBotTyping();
@@ -55,7 +56,9 @@ function setBotResponse(response) {
 
             $(BotResponse).appendTo(".chats").hide().fadeIn(1000);
             scrollToBottomOfResults();
-        } else {
+        } 
+        else {
+            console.log("inside setBot function else condition")
             // if we get response from Rasa
             for (let i = 0; i < response.length; i += 1) {
                 // check if the response contains "text"
@@ -132,9 +135,17 @@ function setBotResponse(response) {
                         if (response[i].attachment.type === "soundcloud") {
                             // check if the attachment type is "soundcloud"
                             const soundcloud = response[i].attachment.payload.src;
+                            console.log("soundCloud file", soundcloud)
                             const BotResponse = `<div>
-                            <iframe width="100%" height="150" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1070182909&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-                            <div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-538536148" title="Rwanda Women&#x27;s Network" target="_blank" style="color: #cccccc; text-decoration: none;">Rwanda Women&#x27;s Network</a> · <a href="${soundcloud}" title="Greet 2" target="_blank" style="color: #cccccc; text-decoration: none;">Greet 2</a></div>
+                            <iframe width="100%" height="150" scrolling="no" frameborder="no" allow="autoplay" 
+                            src="https://w.soundcloud.com/player/?url=${soundcloud}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
+                            </iframe>
+                            <div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;
+                            overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,
+                            Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;
+                            font-weight: 100;">
+                            <a href="https://soundcloud.com/user-538536148" title="Rwanda Women&#x27;s Network" target="_blank" style="color: #cccccc; text-decoration: none;">Rwanda Women&#x27;s Network</a>
+                             · <a href="${soundcloud}" title="Greet 2" target="_blank" style="color: #cccccc; text-decoration: none;">Greet 2</a></div>
                             </div>`;
                             $(BotResponse).appendTo(".chats").hide().fadeIn(1000);
                         }
@@ -269,6 +280,7 @@ function send(message) {
                 return;
             }
             setBotResponse(botResponse);
+            console.log("back from setBotResponse function")
         },
         error(xhr, textStatus) {
             if (message.toLowerCase() === "/restart") {
